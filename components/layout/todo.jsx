@@ -35,10 +35,10 @@ function Todo() {
                 <div className="todo_content">{
                     todoList.map((todoItem, index)=>
                         <div className="todo_content-cell" key={index}>
-                        <div className="todo_content-cell-inner">
+                        <div className="todo_content-cell-inner w-full">
                             <div className="btn-div-left"><button className="flex-center" onClick={() => handleTodoTick(index)}><Image src={tickIcon}
                                 alt='tick' style={todoItem.isDone?{ display: 'inline' }:{display : 'none'}}/></button></div>
-                            <div className="todo-name" style={todoItem.isDone?{textDecoration : 'line-through'}:{textDecoration : 'none'}}>{todoItem.name}</div>
+                            <div className="todo-name w-full" style={todoItem.isDone?{textDecoration : 'line-through'}:{textDecoration : 'none'}}>{todoItem.name}</div>
                         </div>
                         <div className="todo_content-cell-delete"><Image src={deleteIcon} alt="delete" id='todo-delete-icon' onClick={()=>handleTodoDelete(index)}/></div>
                         </div>

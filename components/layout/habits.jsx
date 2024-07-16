@@ -40,7 +40,7 @@ function Habits() {
     }
     return (
         <>
-            <div className="habits">
+            <div className="habits flex-1">
                 <div className="habits_heading title">
                     Habits
                 </div>
@@ -48,9 +48,9 @@ function Habits() {
                     {habitList.map((habit, index) =>
                         <div className="habits_content-cell" key={index}>
                         <div className="habits_content-cell-streak">{habit.streak}</div>
-                        <div className="habits_content-cell-inner">
+                        <div className="habits_content-cell-inner w-full">
                             <div className="btn-div-left"><button onClick={() => handleStreakIncrement(index)}>+</button></div>
-                            <div className="habit-name">{habit.name}</div>
+                            <div className="habit-name w-full">{habit.name}</div>
                             <div className="btn-div-right"><button onClick={() => handleStreakDecrement(index)}>-</button></div>
                         </div>
                         <div className="habits_content-cell-delete"><Image src={deleteIcon} onClick={() => handleHabitDelete(index)} alt="delete"/>

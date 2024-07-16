@@ -8,18 +8,18 @@ import ExpenseTracker from "@/components/layout/expenseTracker";
 export default function Home() {
   return (
     <>
-      <main className="flex">
-        <section className="">
+      <main className="flex items-start">
+        <section className="my-3 mx-4 flex flex-col gap-6 flex-1 justify-start min-h-screen">
           <Habits />
           <Note />
         </section>
 
-        <section>
+        <section className="my-3 mx-4 flex flex-col gap-6 flex-1 justify-start min-h-screen">
           <Todo />
           <Progress />
         </section>
 
-        <section>
+        <section className="my-3 mx-4 flex flex-col sm:flex-row md:flex-col gap-6 flex-1 justify-start min-h-screen">
           <Pomodoro/>
           <ExpenseTracker />
         </section>

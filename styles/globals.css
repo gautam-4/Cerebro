@@ -20,11 +20,19 @@
   scroll-behavior: smooth;
 }
 
+html{
+  height: 100%;
+}
+
 body {
   margin: 0 auto;
   background-color: var(--primary-color);
   color: #fff;
   font-family: "Plus Jakarta Sans", sans-serif;
+  overflow-x: hidden;
+  transform: scale(0.8);
+  transform-origin: top left;
+  width: 125%;
 }
 
 a {
@@ -85,13 +93,13 @@ main{
   justify-content: space-evenly;
   align-items: center;
 }
-section{
+/* section{
   margin: 12px 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   flex: 1;
-}
+} */
 /* .section-one{
   max-width: 450px;
 }
@@ -112,14 +120,14 @@ section{
   padding-right: 3px;
 }
 .habits{
-  height: calc(100vh - 280px);
-  min-height: 465px;
-  min-width: 450px;
+  /* height: ; */
+  min-height: calc(100vh - 80px);
+  min-width: 340px;
 }
 .todo{
-  height: calc(100vh - 208px);
+  height: 100px;
   min-height: 537px;
-  min-width: 380px;
+  min-width: 340px;
 }
 
 .habits_heading, .todo_heading{
@@ -138,7 +146,7 @@ section{
   overflow-x: hidden;
 }
 .habits_content{
-  max-height: calc(100vh - 445px);
+  max-height: calc(100vh - 270px);
   min-height: 105px;
 }
 .todo_content{
@@ -172,11 +180,11 @@ section{
   text-align: center;
 }
 .habit-name{
-  width: 205.5px;
+  /* width: 180px; */
   max-height: 70.4px;
 }
 .todo-name{
-  width: 240px;
+  /* width: 240px; */
   max-height: 70.4px;
 }
 
@@ -238,6 +246,7 @@ section{
   z-index: 1;
   display: flex;
   gap: 10px;
+  color: black;
 }
 .habits-add button, .todo-add button{
   height: 54px;
@@ -245,6 +254,8 @@ section{
   border: 0;
   border-radius: 10px;
   font-size: 34px;
+  background-color: white;
+  color: black;
 }
 .habits-add button:hover, .todo-add button:hover{
   background-color: rgb(231, 231, 231);

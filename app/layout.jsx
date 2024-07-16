@@ -10,8 +10,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <div className="overflow-x-hidden">
+          <Navbar />
+          {children}
+          </div>
       </body>
     </html>
   );
