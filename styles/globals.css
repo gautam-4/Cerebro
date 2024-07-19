@@ -294,6 +294,11 @@ main{
   justify-content: space-evenly; */
   padding: 20px;
 }
+@media screen and (max-width: 460px){
+  .pomodoro{
+    width: 116vw;
+  }
+}
 /* .pomodoro-options{
   display:flex;
   justify-content: center;
@@ -355,7 +360,11 @@ main{
     left: 50px;
   }
 }
-
+@media screen and (max-width: 460px) {
+  .pomodoro-reset button{
+    left: 50px;
+  }
+}
 
 .none{
   display: none;
@@ -384,6 +393,11 @@ main{
   background-color: gainsboro;
   color: var(--primary-color);  
   padding-right: 5px; 
+}
+@media screen and (max-width: 460px){
+  .expense-tracker{
+    min-width: 116vw;
+  }
 }
 
 .expense-tracker_total{
@@ -420,14 +434,22 @@ main{
   text-align: center;
   padding: 14px;
 }
+@media screen and (max-width: 460px){
+  .expense_add input[type="text"]{
+    width: 110px;
+  }
+  .expense_add input[type="number"]{
+    width: 80px;
+  }
+}
 
 .expense_add button{
-  width: 100px;
+  width: 90px;
   height: 50px;
   border: 0;
   border-radius: 10px;
-  font-size: 30px;
-  padding: 10px;
+  font-size: 24px;
+  /* padding: 10px; */
   color: white;
   background-color: var(--primary-color);
   font-weight: 600;

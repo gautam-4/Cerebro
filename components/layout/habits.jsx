@@ -49,9 +49,9 @@ function Habits() {
                         <div className="habits_content-cell" key={index}>
                         <div className="habits_content-cell-streak">{habit.streak}</div>
                         <div className="habits_content-cell-inner w-full">
-                            <div className="btn-div-left"><button onClick={() => handleStreakIncrement(index)}>+</button></div>
+                            <div className="btn-div-left"><button onClick={() => handleStreakIncrement(index)} className="flex justify-center items-center pb-2">+</button></div>
                             <div className="habit-name w-full">{habit.name}</div>
-                            <div className="btn-div-right"><button onClick={() => handleStreakDecrement(index)}>-</button></div>
+                            <div className="btn-div-right"><button onClick={() => handleStreakDecrement(index)} className="flex justify-center items-center pb-1.5 pl-0.5">-</button></div>
                         </div>
                         <div className="habits_content-cell-delete"><Image src={deleteIcon} onClick={() => handleHabitDelete(index)} alt="delete"/>
                         </div>
@@ -60,7 +60,7 @@ function Habits() {
                 </div>
                 <div className="habits-add">
                     <input type="text" placeholder="Habit Name" maxLength="20" id="add-habit-name"/>
-                    <button onClick={handleHabitAdd}>+</button>
+                    <button onClick={handleHabitAdd} className="flex justify-center items-center pb-2.5 pl-0.5">+</button>
                 </div>
             </div>
         </>

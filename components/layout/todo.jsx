@@ -47,7 +47,7 @@ function Todo() {
 
                 <div className="todo-add">
                     <input type="text" placeholder="To-do Name" maxLength="20" id="add-todo-name"/>
-                    <button onClick={handleTodoAdd}>+</button>
+                    <button onClick={handleTodoAdd} className="flex justify-center items-center pb-2.5 pl-0.5">+</button>
                 </div>
             </div>
         </>

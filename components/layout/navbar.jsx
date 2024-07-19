@@ -13,7 +13,7 @@ const Navbar = () => {
                     <button
                         className='flex justify-around px-4 py-1 border-0 font-bold text-sm rounded-lg navbar-btn-red'
                     >                       
-                        <Image src={logoutIcon} alt="logout" /><span>&nbsp;Log Out</span>
+                        <Image src={logoutIcon} alt="logout" /><span className='hidden sm:block'>&nbsp;Log Out</span>
                     </button>
                 </div>
             </nav>
