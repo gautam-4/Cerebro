@@ -120,13 +120,11 @@ main{
   padding-right: 3px;
 }
 .habits{
-  /* height: ; */
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 130px);
   min-width: 340px;
 }
 .todo{
-  height: 100px;
-  min-height: 537px;
+  min-height: calc(100vh - 60px);
   min-width: 340px;
 }
 
@@ -273,8 +271,8 @@ main{
 }
 
 .progress{
-  height: 103px;
-  border-radius: 12px;
+  height: 138px;
+  border-radius: 14px;
   padding: 10px;
   background-color: white;
   color: black;
@@ -284,22 +282,23 @@ main{
 }
 
 .pomodoro{
-  min-width: 400px;
-  height: 300px;
+  /* min-height: calc(100vh - 350px); */
+  max-height: calc(100vh - 267px);
   background-color: var(--secondary-color);
   backdrop-filter: blur(5px);
   border-radius: 12px;
   box-shadow: var(--box-shadow-color);
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   padding: 20px;
 }
-.pomodoro-options{
+/* .pomodoro-options{
   display:flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-}
+} */
 .pomodoro-options button{
   padding: 10px 15px;
   font-size: 20px;
@@ -318,6 +317,7 @@ main{
 }
 .pomodoro-timer{
   position: relative;
+  height: 160px;
   display:flex;
   justify-content: center;
   align-items: center;
@@ -336,22 +336,31 @@ main{
   font-weight: bold;
   font-size: 40px;
   border-radius: 12px;
-  padding: 20px;
+  padding: 15px 25px;
   border-bottom: 5px solid rgb(173, 173, 173);
 }
 .pomodoro-reset button{
   position: absolute;
-  left: 150px;
-  top: 235px;
+  left: 100px;
+  bottom: 50px;
   background-color: transparent;
   color: var(--primary-color);
   border: 0;
   font-size: 20px;
   font-weight: bold;
 }
+@media screen and (max-width: 1023px) and (min-width:768px) {
+  .pomodoro-reset button{
+    left: 50px;
+    bottom: 80px;
+  }
+}
+
+
 .none{
   display: none;
 }
+
 .pomodoro-reset img{
   height: 30px;
   width: 30px;
@@ -363,7 +372,7 @@ main{
 }
 
 .expense-tracker{
-  height: calc(100vh - 405px);
+  height: calc(100vh - 267px);
   min-height: 340px;
   min-width: 550px;
   display: flex;

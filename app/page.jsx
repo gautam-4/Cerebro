@@ -19,7 +19,7 @@ export default function Home() {
           <Progress />
         </section>
 
-        <section className="my-3 mx-4 flex flex-col sm:flex-row md:flex-col gap-6 flex-1 justify-start min-h-screen">
+        <section className="my-3 mx-4 flex flex-col md:flex-row lg:flex-col gap-6 flex-1 justify-start min-h-screen">
           <Pomodoro/>
           <ExpenseTracker />
         </section>

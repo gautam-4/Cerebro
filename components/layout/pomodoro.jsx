@@ -80,8 +80,8 @@ function Pomodoro() {
 
     return (
         <>
-            <div className="pomodoro">
-                <div className="pomodoro-options">
+            <div className="pomodoro w-full">
+                <div className="pomodoro-options flex justify-center items-center gap-5">
                     <button className={isStudying ? "active-btn" : "inactive-btn"} onClick={handleStudy}>Study</button>
                     <button className={isStudying ? "inactive-btn" : "active-btn"} onClick={handleBreak}>Break</button>
                 </div>
