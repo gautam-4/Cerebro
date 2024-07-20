@@ -93,22 +93,6 @@ main{
   justify-content: space-evenly;
   align-items: center;
 }
-/* section{
-  margin: 12px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  flex: 1;
-} */
-/* .section-one{
-  max-width: 450px;
-}
-.section-two{
-  max-width: 380px;
-}
-.section-three{
-  flex: 1
-} */
 
 .habits, .todo{
   background-color: var(--secondary-color);
@@ -178,11 +162,9 @@ main{
   text-align: center;
 }
 .habit-name{
-  /* width: 180px; */
   max-height: 70.4px;
 }
 .todo-name{
-  /* width: 240px; */
   max-height: 70.4px;
 }
 
@@ -282,16 +264,11 @@ main{
 }
 
 .pomodoro{
-  /* min-height: calc(100vh - 350px); */
   height: 340px;
-  /* max-height: calc(100vh - 267px); */
   background-color: var(--secondary-color);
   backdrop-filter: blur(5px);
   border-radius: 12px;
   box-shadow: var(--box-shadow-color);
-  /* display: flex;
-  flex-direction: column;
-  justify-content: space-evenly; */
   padding: 20px;
 }
 @media screen and (max-width: 460px){
@@ -299,12 +276,7 @@ main{
     width: 116vw;
   }
 }
-/* .pomodoro-options{
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-} */
+
 .pomodoro-options button{
   padding: 10px 15px;
   font-size: 20px;
@@ -515,11 +487,6 @@ main{
   margin: 5px 20px 0 60px;
   position: relative;
 }
-/* @media screen and (max-height: 580px){
-  .expense_history-cell{
-    margin: 0px 20px 0 60px;
-  }
-} */
 
 .expense_history-cell .expense-name{
   width: 170px;
