@@ -145,11 +145,11 @@ main{
 }
 .habits_content{
   max-height: calc(100vh - 320px);
-  min-height: 105px;
+  min-height: 300px;
 }
 .todo_content{
   max-height: calc(100vh - 255px);
-  min-height: 105px;
+  min-height: 370px;
 }
 
 .habits_content-inner{
@@ -388,7 +388,8 @@ main{
   min-width: 550px;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: start;
+  gap: 12px;
   border-radius: 12px;
   background-color: gainsboro;
   color: var(--primary-color);  
@@ -485,7 +486,26 @@ main{
   overflow-y:auto;
   overflow-x: hidden;
   max-height: 160px;
-  min-height: 35px;
+  min-height: 60px;
+}
+
+@media screen and (min-width: 1200px) and (min-height:860px){
+  .expense-tracker{
+    max-height: max-content;
+  }
+}
+@media screen and (min-width: 1200px) and (min-height:700px){
+  .expense-tracker{
+    gap:36px;
+  }
+  .expense_history-content{
+    max-height: calc(100vh - 595px);
+  }
+}
+@media screen and (max-height: 695px){
+  .expense_history-content{
+    max-height: calc(100vh - 540px);
+  }
 }
 
 .expense_history-cell{
@@ -495,9 +515,16 @@ main{
   margin: 5px 20px 0 60px;
   position: relative;
 }
+/* @media screen and (max-height: 580px){
+  .expense_history-cell{
+    margin: 0px 20px 0 60px;
+  }
+} */
+
 .expense_history-cell .expense-name{
   width: 170px;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .expense_history-cell .expense-delete{
@@ -506,4 +533,18 @@ main{
   width: 20px;
   right: 0;
   cursor: pointer;
+}
+
+@media screen and (max-width:470px) {
+  .expense_history-cell{
+    display:flex;
+    gap: 20px;
+    font-size: 18px;
+    margin: 5px 20px 0 30px;
+    position: relative;
+  }
+  .expense_history-cell .expense-name{
+    width: 105px;
+    overflow: hidden;
+  }
 }

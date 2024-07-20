@@ -8,13 +8,15 @@ function ExpenseTracker() {
     const[expenseList, setExpenseList] = useState([]);
     const[expenseTotal, setExpenseTotal] = useState(0);
 
+    const [expenseData, setExpenseData] = useState([{name: '', amount: ''}]);
+
     function getDate(){
         const today = new Date();
         const month = (today.getMonth() + 1).toString().padStart(2, '0');
         const date = today.getDate().toString().padStart(2, '0');
         const year = (today.getFullYear()).toString().slice(-2).padStart(2, '0');
-        const dateString = `${date}/${month}/${year}`;
-        return dateString;
+        const dateString = `${date}/${month}`;
+        return {dateString, year};
     }
 
     function handleExpenseAdd(){
@@ -22,7 +24,7 @@ function ExpenseTracker() {
         const expenseAmount = parseFloat(document.getElementById('add-expense-amount').value);
         if (expenseName.trim()!=="" && !isNaN(expenseAmount) && expenseAmount>0){
             const roundedAmount = Math.round(expenseAmount * 100) / 100;
-            setExpenseList(prevExpenseList => [...prevExpenseList, {date: getDate(), name: expenseName, amount: roundedAmount}])
+            setExpenseList(prevExpenseList => [...prevExpenseList, {date: getDate().dateString, year: getDate().year, name: expenseName, amount: roundedAmount}])
             document.getElementById('add-expense-name').value = ""
             document.getElementById('add-expense-amount').value = ""
             setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal + roundedAmount).toFixed(2)))
@@ -47,7 +49,7 @@ function ExpenseTracker() {
                 </div>
                 <div className="expense_add">
                     <input type="text" placeholder="Transaction name" maxLength="18" id="add-expense-name"/>
-                    <input type="number" step="0.01" placeholder="Amount" maxLength="6" id="add-expense-amount"/>
+                    <input type="number" step="0.01" placeholder="Amount" max="999999.99" id="add-expense-amount"/>
                     <button className="flex items-center justify-center" onClick={handleExpenseAdd}>Add</button>
                 </div>
                 <div className="expense_history">
@@ -56,7 +58,7 @@ function ExpenseTracker() {
                     <div className="expense_history-content">
                         {expenseList.map((expenseItem, index) => 
                             <div className="expense_history-cell" key={index}>
-                                <div className="expense-date">{expenseItem.date}</div>
+                                <div className="expense-date">{expenseItem.date}<span className="hidden sm:inline">/{expenseItem.year}</span></div>
                                 <div className="expense-name">{expenseItem.name}</div>
                                 <div className="expense-amount">$ {expenseItem.amount.toFixed(2)}</div>
                                 <div className="expense-delete"><Image src={deleteIconRed} onClick={() => handleExpenseDelete(index)} alt="delete" /></div>
