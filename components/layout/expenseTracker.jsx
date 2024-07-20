@@ -5,40 +5,52 @@ import deleteIconRed from '@/public/assets/delete-icon-red.svg'
 import Image from "next/image";
 
 function ExpenseTracker() {
-    const[expenseList, setExpenseList] = useState([]);
-    const[expenseTotal, setExpenseTotal] = useState(0);
+    const [expenseList, setExpenseList] = useState([]);
+    const [expenseTotal, setExpenseTotal] = useState(0);
+    const [expenseData, setExpenseData] = useState({ name: '', amount: '' });
 
-    const [expenseData, setExpenseData] = useState([{name: '', amount: ''}]);
-
-    function getDate(){
+    function getDate() {
         const today = new Date();
         const month = (today.getMonth() + 1).toString().padStart(2, '0');
         const date = today.getDate().toString().padStart(2, '0');
-        const year = (today.getFullYear()).toString().slice(-2).padStart(2, '0');
+        const year = today.getFullYear().toString().slice(-2).padStart(2, '0');
         const dateString = `${date}/${month}`;
-        return {dateString, year};
+        return { dateString, year };
     }
 
-    function handleExpenseAdd(){
-        const expenseName = document.getElementById('add-expense-name').value;
-        const expenseAmount = parseFloat(document.getElementById('add-expense-amount').value);
-        if (expenseName.trim()!=="" && !isNaN(expenseAmount) && expenseAmount>0){
+    function handleExpenseAdd() {
+        const { name, amount } = expenseData;
+        const expenseAmount = parseFloat(amount);
+        if (name.trim() !== "" && !isNaN(expenseAmount) && expenseAmount > 0) {
             const roundedAmount = Math.round(expenseAmount * 100) / 100;
-            setExpenseList(prevExpenseList => [...prevExpenseList, {date: getDate().dateString, year: getDate().year, name: expenseName, amount: roundedAmount}])
-            document.getElementById('add-expense-name').value = ""
-            document.getElementById('add-expense-amount').value = ""
-            setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal + roundedAmount).toFixed(2)))
+            setExpenseList(prevExpenseList => [...prevExpenseList, { date: getDate().dateString, year: getDate().year, name, amount: roundedAmount }]);
+            setExpenseData({ name: '', amount: '' });
+            setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal + roundedAmount).toFixed(2)));
         }
     }
 
-    function handleExpenseDelete(index){
-        setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal - expenseList[index].amount).toFixed(2)))
-        setExpenseList(expenseList.filter((_, i) => i !== index))
+    function handleExpenseDelete(index) {
+        setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal - expenseList[index].amount).toFixed(2)));
+        setExpenseList(expenseList.filter((_, i) => i !== index));
     }
 
-    function handleExpenseClear(){
-        setExpenseList(expenseList.filter((_, __)=>false))
-        setExpenseTotal(0)
+    function handleExpenseClear() {
+        setExpenseList([]);
+        setExpenseTotal(0);
+    }
+
+    function handleInputChange(event) {
+        const { name, value } = event.target;
+
+        if (name === "amount") {
+            // Validate amount to allow only numbers with up to 6 non-decimal digits
+            const regex = /^[0-9]{0,6}(\.[0-9]*)?$/;
+            if (regex.test(value)) {
+                setExpenseData(prevData => ({ ...prevData, [name]: value }));
+            }
+        } else {
+            setExpenseData(prevData => ({ ...prevData, [name]: value }));
+        }
     }
 
     return (
@@ -48,8 +60,23 @@ function ExpenseTracker() {
                     $ <span>{expenseTotal.toFixed(2)}</span>
                 </div>
                 <div className="expense_add">
-                    <input type="text" placeholder="Transaction name" maxLength="18" id="add-expense-name"/>
-                    <input type="number" step="0.01" placeholder="Amount" max="999999.99" id="add-expense-amount"/>
+                    <input 
+                        type="text" 
+                        placeholder="Transaction name" 
+                        maxLength="18" 
+                        name="name" 
+                        value={expenseData.name} 
+                        onChange={handleInputChange}
+                    />
+                    <input 
+                        type="number" 
+                        step="0.01" 
+                        placeholder="Amount" 
+                        max="999999.99" 
+                        name="amount" 
+                        value={expenseData.amount} 
+                        onChange={handleInputChange}
+                    />
                     <button className="flex items-center justify-center" onClick={handleExpenseAdd}>Add</button>
                 </div>
                 <div className="expense_history">
@@ -68,7 +95,7 @@ function ExpenseTracker() {
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default ExpenseTracker
+export default ExpenseTracker;
