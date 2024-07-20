@@ -7,7 +7,7 @@ import Image from "next/image";
 function ExpenseTracker() {
     const [expenseList, setExpenseList] = useState([]);
     const [expenseTotal, setExpenseTotal] = useState(0);
-    const [expenseData, setExpenseData] = useState({ name: '', amount: '' });
+    const [expenseData, setExpenseData] = useState({ newExpense: '', amount: '' });
 
     function getDate() {
         const today = new Date();
@@ -19,12 +19,13 @@ function ExpenseTracker() {
     }
 
     function handleExpenseAdd() {
-        const { name, amount } = expenseData;
+        const { newExpense, amount } = expenseData;
         const expenseAmount = parseFloat(amount);
-        if (name.trim() !== "" && !isNaN(expenseAmount) && expenseAmount > 0) {
+        const name = newExpense.trim();
+        if (name !== "" && !isNaN(expenseAmount) && expenseAmount > 0) {
             const roundedAmount = Math.round(expenseAmount * 100) / 100;
             setExpenseList(prevExpenseList => [...prevExpenseList, { date: getDate().dateString, year: getDate().year, name, amount: roundedAmount }]);
-            setExpenseData({ name: '', amount: '' });
+            setExpenseData({ newExpense: '', amount: '' });
             setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal + roundedAmount).toFixed(2)));
         }
     }
@@ -62,10 +63,10 @@ function ExpenseTracker() {
                 <div className="expense_add">
                     <input 
                         type="text" 
-                        placeholder="Transaction name" 
+                        placeholder="Expense" 
                         maxLength="18" 
-                        name="name" 
-                        value={expenseData.name} 
+                        name="newExpense"
+                        value={expenseData.newExpense} 
                         onChange={handleInputChange}
                     />
                     <input 

@@ -258,8 +258,6 @@ main{
   padding: 10px;
   background-color: white;
   color: black;
-  font-weight: 700;
-  font-size: 18px;
   font-family: var(--font-one);
 }
 

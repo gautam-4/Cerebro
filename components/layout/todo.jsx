@@ -7,23 +7,27 @@ import Image from 'next/image'
 
 function Todo() {
     const [todoList, setTodoList] = useState([{name: 'todo1', isDone: false}])
+    const [newTodo, setNewTodo] = useState('')
 
-    function handleTodoAdd(){
-        const todoName = document.getElementById('add-todo-name').value;
-        if (todoName.trim()!==""){
-            setTodoList(prevTodoList => [...prevTodoList, {name: todoName, isDone: false}])
-            document.getElementById('add-todo-name').value = ""
+    function handleTodoAdd() {
+        if (newTodo.trim() !== "") {
+            setTodoList(prevTodoList => [...prevTodoList, {name: newTodo, isDone: false}])
+            setNewTodo('') // Clear input field
         }
     }
 
     function handleTodoTick(index) {
-        const prevTodoList = [...todoList];
-        prevTodoList[index].isDone = !prevTodoList[index].isDone;
-        setTodoList(prevTodoList);
+        setTodoList(prevTodoList => 
+            prevTodoList.map((todoItem, i) => 
+                i === index ? { ...todoItem, isDone: !todoItem.isDone } : todoItem
+            )
+        )
     }
 
     function handleTodoDelete(index) {
-        setTodoList(todoList.filter((_, i) => i !== index));
+        setTodoList(prevTodoList => 
+            prevTodoList.filter((_, i) => i !== index)
+        )
     }
 
     return (
@@ -32,21 +36,34 @@ function Todo() {
                 <div className="todo_heading title">
                     To-do
                 </div>
-                <div className="todo_content">{
-                    todoList.map((todoItem, index)=>
+                <div className="todo_content">
+                    {todoList.map((todoItem, index) => (
                         <div className="todo_content-cell" key={index}>
-                        <div className="todo_content-cell-inner w-full">
-                            <div className="btn-div-left"><button className="flex-center" onClick={() => handleTodoTick(index)}><Image src={tickIcon}
-                                alt='tick' style={todoItem.isDone?{ display: 'inline' }:{display : 'none'}}/></button></div>
-                            <div className="todo-name w-full" style={todoItem.isDone?{textDecoration : 'line-through'}:{textDecoration : 'none'}}>{todoItem.name}</div>
+                            <div className="todo_content-cell-inner w-full">
+                                <div className="btn-div-left">
+                                    <button className="flex-center" onClick={() => handleTodoTick(index)}>
+                                        <Image src={tickIcon} alt='tick' style={todoItem.isDone ? { display: 'inline' } : { display: 'none' }} />
+                                    </button>
+                                </div>
+                                <div className="todo-name w-full" style={todoItem.isDone ? { textDecoration: 'line-through' } : { textDecoration: 'none' }}>
+                                    {todoItem.name}
+                                </div>
+                            </div>
+                            <div className="todo_content-cell-delete">
+                                <Image src={deleteIcon} alt="delete" onClick={() => handleTodoDelete(index)} />
+                            </div>
                         </div>
-                        <div className="todo_content-cell-delete"><Image src={deleteIcon} alt="delete" id='todo-delete-icon' onClick={()=>handleTodoDelete(index)}/></div>
-                        </div>
-                )}
+                    ))}
                 </div>
 
                 <div className="todo-add">
-                    <input type="text" placeholder="To-do Name" maxLength="20" id="add-todo-name"/>
+                    <input 
+                        type="text" 
+                        placeholder="To-do Name" 
+                        maxLength="20" 
+                        value={newTodo} 
+                        onChange={(e) => setNewTodo(e.target.value)} 
+                    />
                     <button onClick={handleTodoAdd} className="flex justify-center items-center pb-2.5 pl-0.5">+</button>
                 </div>
             </div>
