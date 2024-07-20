@@ -1,9 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useContext } from 'react';
+import { TodoContext } from '@/context/TodoContext';
+import { HabitsContext } from '@/context/habitsContext';
 
 function Progress() {
-    const [percentage, setPercentage] = useState(75);
+    const { totalTodosCompletedEver, todoPercentage } = useContext(TodoContext);
+    const { maxStreakEver } = useContext(HabitsContext);
+    
     return (
         <>
             <div className="progress">
@@ -13,14 +17,14 @@ function Progress() {
                         <div className="w-full bg-gray-200 dark:bg-gray-20 rounded-md">
                             <div
                                 className="bg-blue-400 opacity-80 text-lg font-semibold text-black text-center p-1.5 leading-none rounded-md"
-                                style={{ width: `${percentage}%` }}
+                                style={{ width: `${todoPercentage}%` }}
                             >
-                                {percentage}%
+                                {todoPercentage}%
                             </div>
                         </div>
                     </div>
-                    <div className="text-lg">To-dos completed ever: <span className="font-semibold">12</span></div>
-                    <div className="text-lg">Maximum habit streak ever: <span className="font-semibold">30</span></div>
+                    <div className="text-lg">To-dos completed all-time: <span className="font-semibold">{totalTodosCompletedEver/2}</span></div>
+                    <div className="text-lg">Maximum habit streak ever: <span className="font-semibold">{maxStreakEver}</span></div>
                 </div>
             </div>
         </>
