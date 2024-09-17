@@ -43,18 +43,18 @@ const Navbar = () => {
                     {user ? (
                         <button
                             onClick={handleLogout}
-                            className="flex justify-around px-4 py-1 border-0 font-bold text-sm rounded-lg navbar-btn-red"
+                            className="flex gap-2.5 px-5 py-1 justify-center items-center border-0 font-bold text-sm rounded-lg navbar-btn-red"
                         >
                             <Image src={logoutIcon} alt="logout" />
-                            <span className="hidden sm:block">&nbsp;Log Out</span>
+                            <span className="hidden sm:block text-lg">&nbsp;Log Out</span>
                         </button>
                     ) : (
                         <button
-                            className="flex justify-around px-4 py-1 border-0 font-bold text-sm rounded-lg navbar-btn-green"
+                            className="flex gap-2.5 px-5 py-1 justify-center items-center border-0 font-bold text-sm rounded-lg navbar-btn-green"
                             onClick={handleGoogleAuth}
                         >
                             <Image src={logoutIcon} alt="logout" />
-                            <span className="hidden sm:block">Log In</span>
+                            <span className="hidden sm:block text-lg">Log In</span>
                         </button>
                     )}
                 </div>
