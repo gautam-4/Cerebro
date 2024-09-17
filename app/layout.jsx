@@ -4,8 +4,8 @@ import { TodoProvider } from '@/context/todoContext';
 import { HabitsProvider } from "@/context/habitsContext";
 
 export const metadata = {
-  title: "cerebro",
-  description: "Productivity web app",
+  title: "Cerebro",
+  description: "All in one productivity web app",
 };
 
 export default function RootLayout({ children }) {
