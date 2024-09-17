@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext } from 'react';
-import { TodoContext } from '@/context/TodoContext';
+import { TodoContext } from '@/context/todoContext';
 import deleteIcon from '@/public/assets/delete-icon.svg';
 import tickIcon from '@/public/assets/tick-icon2.svg';
 import Image from 'next/image';

@@ -1,12 +1,12 @@
 "use client"
 
 import { useContext } from 'react';
-import { TodoContext } from '@/context/TodoContext';
-import { HabitsContext } from '@/context/habitsContext';
+import { TodoContext } from '@/context/todoContext';
+//import { HabitsContext } from '@/context/habitsContext';
 
 function Progress() {
     const { totalTodosCompletedEver, todoPercentage } = useContext(TodoContext);
-    const { maxStreakEver } = useContext(HabitsContext);
+    //const { maxStreakEver } = useContext(HabitsContext);
 
     return (
         <>

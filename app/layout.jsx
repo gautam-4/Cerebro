@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import Navbar from "@/components/layout/navbar";
-import { TodoProvider } from '@/context/TodoContext';
+import { TodoProvider } from '@/context/todoContext';
 import { HabitsProvider } from "@/context/habitsContext";
 
 export const metadata = {
