@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
+import { supabase } from '@/lib/supabaseClient'; // Make sure this import is correct for your project structure
 import deleteIconRed from '@/public/assets/delete-icon-red.svg'
 import Image from "next/image";
 
@@ -8,6 +9,56 @@ function ExpenseTracker() {
     const [expenseList, setExpenseList] = useState([]);
     const [expenseTotal, setExpenseTotal] = useState(0);
     const [expenseData, setExpenseData] = useState({ newExpense: '', amount: '' });
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                await fetchExpensesFromSupabase(session.user.id);
+            }
+        };
+
+        fetchSession();
+
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                fetchExpensesFromSupabase(session.user.id);
+            } else {
+                setExpenseList([]);
+                setExpenseTotal(0);
+            }
+        });
+
+        return () => {
+            authListener.subscription.unsubscribe();
+        };
+    }, []);
+
+    const fetchExpensesFromSupabase = async (userId) => {
+        const { data: expenses, error } = await supabase
+            .from('expenses')
+            .select('*')
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error('Error fetching expenses:', error.message);
+        } else if (expenses && expenses.length > 0) {
+            setExpenseList(expenses.map(expense => ({
+                id: expense.id,
+                date: expense.date,
+                year: expense.year,
+                name: expense.name,
+                amount: expense.amount
+            })));
+            setExpenseTotal(expenses.reduce((total, expense) => total + expense.amount, 0));
+        } else {
+            setExpenseList([]);
+            setExpenseTotal(0);
+        }
+    };
 
     function getDate() {
         const today = new Date();
@@ -18,26 +69,92 @@ function ExpenseTracker() {
         return { dateString, year };
     }
 
-    function handleExpenseAdd() {
+    async function handleExpenseAdd() {
         const { newExpense, amount } = expenseData;
         const expenseAmount = parseFloat(amount);
         const name = newExpense.trim();
         if (name !== "" && !isNaN(expenseAmount) && expenseAmount > 0) {
             const roundedAmount = Math.round(expenseAmount * 100) / 100;
-            setExpenseList(prevExpenseList => [...prevExpenseList, { date: getDate().dateString, year: getDate().year, name, amount: roundedAmount }]);
+            const newExpenseItem = { 
+                id: Date.now().toString(),
+                date: getDate().dateString, 
+                year: getDate().year, 
+                name, 
+                amount: roundedAmount 
+            };
+
+            // Optimistic update
+            setExpenseList(prevExpenseList => [...prevExpenseList, newExpenseItem]);
             setExpenseData({ newExpense: '', amount: '' });
             setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal + roundedAmount).toFixed(2)));
+
+            if (user) {
+                const { data, error } = await supabase
+                    .from('expenses')
+                    .insert({ 
+                        date: newExpenseItem.date,
+                        year: newExpenseItem.year,
+                        name: newExpenseItem.name,
+                        amount: newExpenseItem.amount,
+                        user_id: user.id 
+                    })
+                    .select();
+
+                if (error) {
+                    console.error('Error adding expense:', error.message);
+                    // Revert optimistic update
+                    setExpenseList(prevExpenseList => prevExpenseList.filter(expense => expense.id !== newExpenseItem.id));
+                    setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal - roundedAmount).toFixed(2)));
+                } else {
+                    // Update with the real ID from the database
+                    setExpenseList(prevExpenseList => prevExpenseList.map(expense => 
+                        expense.id === newExpenseItem.id ? { ...expense, id: data[0].id } : expense
+                    ));
+                }
+            }
         }
     }
 
-    function handleExpenseDelete(index) {
-        setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal - expenseList[index].amount).toFixed(2)));
+    async function handleExpenseDelete(index) {
+        const expenseToDelete = expenseList[index];
+
+        // Optimistic update
+        setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal - expenseToDelete.amount).toFixed(2)));
         setExpenseList(expenseList.filter((_, i) => i !== index));
+
+        if (user) {
+            const { error } = await supabase
+                .from('expenses')
+                .delete()
+                .eq('id', expenseToDelete.id)
+                .eq('user_id', user.id);
+
+            if (error) {
+                console.error('Error deleting expense:', error.message);
+                // Revert optimistic update
+                setExpenseList(prevExpenseList => [...prevExpenseList.slice(0, index), expenseToDelete, ...prevExpenseList.slice(index)]);
+                setExpenseTotal(prevExpenseTotal => parseFloat((prevExpenseTotal + expenseToDelete.amount).toFixed(2)));
+            }
+        }
     }
 
-    function handleExpenseClear() {
+    async function handleExpenseClear() {
+        // Optimistic update
         setExpenseList([]);
         setExpenseTotal(0);
+
+        if (user) {
+            const { error } = await supabase
+                .from('expenses')
+                .delete()
+                .eq('user_id', user.id);
+
+            if (error) {
+                console.error('Error clearing expenses:', error.message);
+                // Revert optimistic update
+                await fetchExpensesFromSupabase(user.id);
+            }
+        }
     }
 
     function handleInputChange(event) {
@@ -85,7 +202,7 @@ function ExpenseTracker() {
                         className="expense_history-clear-btn" onClick={handleExpenseClear}>clear</button></div>
                     <div className="expense_history-content">
                         {expenseList.map((expenseItem, index) => 
-                            <div className="expense_history-cell" key={index}>
+                            <div className="expense_history-cell" key={expenseItem.id}>
                                 <div className="expense-date">{expenseItem.date}<span className="hidden sm:inline">/{expenseItem.year}</span></div>
                                 <div className="expense-name">{expenseItem.name}</div>
                                 <div className="expense-amount">$ {expenseItem.amount.toFixed(2)}</div>
