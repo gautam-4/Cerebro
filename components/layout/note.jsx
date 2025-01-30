@@ -1,12 +1,28 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
 function Note() {
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+  const saveTimeoutRef = useRef(null);
+  const pendingSaveRef = useRef(null);
+
+  useEffect(() => {
+    const handleBeforeUnload = async (e) => {
+      if (pendingSaveRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+        await saveNote(pendingSaveRef.current);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -34,59 +50,134 @@ function Note() {
   }, []);
 
   const fetchNoteFromSupabase = async (userId) => {
-    const { data, error } = await supabase
-      .from('notes')
-      .select('content')
-      .eq('user_id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('notes')
+        .select('content')
+        .eq('user_id', userId)
+        .single();
 
-    if (error) {
-      console.error('Error loading note:', error);
-    } else if (data) {
-      setNote(data.content || ''); // Set default empty note if none is found
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading note:', error);
+        setError('Failed to load note');
+      } else if (data) {
+        setNote(data.content);
+        setError(null);
+      }
+    } catch (err) {
+      console.error('Error in fetchNoteFromSupabase:', err);
+      setError('An unexpected error occurred');
     }
   };
 
   const saveNote = useCallback(async (content) => {
-    if (!user || !content.trim()) return; // Prevent saving empty or whitespace-only notes
+    if (!user) return;
+    
+    const trimmedContent = content.trim();
+    if (!trimmedContent) return;
 
     setSaving(true);
-    const { error } = await supabase
-      .from('notes')
-      .upsert({ user_id: user.id, content: content.trim() }, { onConflict: 'user_id' });
+    setError(null);
+    pendingSaveRef.current = null;
 
-    setSaving(false);
+    try {
+      const { error } = await supabase
+        .from('notes')
+        .upsert(
+          { 
+            user_id: user.id, 
+            content: trimmedContent 
+          }, 
+          { 
+            onConflict: 'user_id',
+            returning: true 
+          }
+        );
 
-    if (error) {
-      console.error('Error saving note:', error);
-    } else {
-      console.log('Note saved successfully');
+      if (error) {
+        console.error('Error saving note:', error);
+        setError('Failed to save note');
+        pendingSaveRef.current = content;
+      }
+    } catch (err) {
+      console.error('Error in saveNote:', err);
+      setError('An unexpected error occurred');
+      pendingSaveRef.current = content;
+    } finally {
+      setSaving(false);
     }
   }, [user]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      saveNote(note);
-    }, 1000); // Save 1 second after the user stops typing
+  const debouncedSave = useCallback((content) => {
+    pendingSaveRef.current = content;
+    
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
 
-    return () => clearTimeout(timer);
-  }, [note, saveNote]);
+    saveTimeoutRef.current = setTimeout(() => {
+      saveNote(content);
+    }, 500);
+  }, [saveNote]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      if (pendingSaveRef.current) {
+        saveNote(pendingSaveRef.current);
+      }
+    };
+  }, [saveNote]);
 
   const handleChange = (e) => {
-    setNote(e.target.value);
+    const newContent = e.target.value;
+    setNote(newContent);
+    debouncedSave(newContent);
   };
+
+  useEffect(() => {
+    if (!user) return;
+
+    const subscription = supabase
+      .channel(`notes:${user.id}`)
+      .on('postgres_changes', 
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notes',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          if (payload.new.content !== note) {
+            setNote(payload.new.content);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [user, note]);
 
   return (
     <div className="flex-1">
       <textarea
         name="note"
         id="note"
-        placeholder="Note"
-        className="bg-note_color p-3 font-cursive text-lg rounded-xl border-0 resize-none text-gray-800 w-full h-52"
+        placeholder="Start typing your note..."
+        className="bg-note_color p-3 font-cursive text-lg rounded-xl border-0 resize-none text-gray-800 w-full h-52 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         value={note}
         onChange={handleChange}
+        // disabled={!user}
       ></textarea>
-      {saving && <p className="text-sm text-gray-500 mt-2">Saving...</p>}
+      <div className="mt-2 text-sm">
+        {saving && <p className="text-gray-500">Saving...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+        {!user && <p className="text-gray-500">Please sign in to create notes</p>}
+      </div>
     </div>
   );
 }
